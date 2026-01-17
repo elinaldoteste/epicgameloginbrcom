@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); 
 
-const logPath = path.join(__dirname, 'login.txt');
+const logPath = path.join(process.cwd(), 'login.txt');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
